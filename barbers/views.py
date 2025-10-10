@@ -4,7 +4,7 @@ from barbers.models import Barber
 from barbers.serializers import BarberSerializer
 
 # Get Barbers
-class ShowBarber(generics.ListAPIView):
+class GetBarber(generics.ListAPIView):
   queryset = Barber.objects.all()
   serializer_class = BarberSerializer
 
