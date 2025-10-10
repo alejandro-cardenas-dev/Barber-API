@@ -1,0 +1,7 @@
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Local DB
+db.sqlite3
+
