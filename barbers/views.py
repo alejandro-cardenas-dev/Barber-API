@@ -7,8 +7,3 @@ from barbers.serializers import BarberSerializer
 class GetBarber(generics.ListAPIView):
   queryset = Barber.objects.all()
   serializer_class = BarberSerializer
-
-# Create Barber
-class CreateBarber(generics.CreateAPIView):
-  serializer_class = BarberSerializer
-
