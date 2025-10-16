@@ -26,6 +26,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
       raise serializers.ValidationError(
         {"role": "User must be either a barber or a customer, not both or neither."}
       )
+
     return attrs
 
   def create(self, validated_data):
@@ -48,7 +49,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
       Customer.objects.create(user=user)
 
     return user
-
 
 class UserSerializer(serializers.ModelSerializer):
   class Meta:

@@ -3,6 +3,7 @@ from appointments.models import Appointment
 from appointments.serializers import AppointmentSerializer, CreateAppointmentSerializer
 from barbers.models import Barber
 from permissions import IsBarber, IsCustomer
+from rest_framework.permissions import AllowAny
 
 # Create Appointment
 class CreateAppointment(generics.CreateAPIView):

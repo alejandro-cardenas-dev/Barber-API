@@ -8,4 +8,4 @@ class BarberSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Barber
-    fields = ['user']
+    fields = ['user', 'time_to_start_working', 'time_to_finish_working']
