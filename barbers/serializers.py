@@ -9,3 +9,8 @@ class BarberSerializer(serializers.ModelSerializer):
   class Meta:
     model = Barber
     fields = ['user', 'time_to_start_working', 'time_to_finish_working']
+
+class EditBarberScheduleSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Barber
+    fields = ['time_to_start_working', 'time_to_finish_working']
