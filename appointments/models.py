@@ -14,4 +14,4 @@ class Appointment(models.Model):
     unique_together = ('barber', 'appointment_date', 'appointment_start_time')
 
   def __str__(self):
-    return f'Appointment to : {self.customer.name} with {self.barber.name} barber'
+    return f'Appointment to : {self.customer.user.first_name} with {self.barber.user.first_name} barber'
