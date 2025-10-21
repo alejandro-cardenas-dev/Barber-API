@@ -18,9 +18,7 @@ class CreateAppointmentSerializer(serializers.ModelSerializer):
 
     return value
 
-  # Feature: add time validation
   def validate_appointment_start_time(self, value):
-
     barber_id = self.initial_data.get('barber')
 
     if not barber_id:
