@@ -1,9 +1,10 @@
 from rest_framework import serializers
-from datetime import date, datetime
+from datetime import date
 from appointments.models import Appointment
 from barbers.models import Barber
-from barbers.serializers import BarberSerializer
+from barbers.serializers import SimpleBarberSerializer
 from customers.serializers import CustomerSerializer
+
 
 class CreateAppointmentSerializer(serializers.ModelSerializer):
   class Meta:
@@ -38,8 +39,9 @@ class CreateAppointmentSerializer(serializers.ModelSerializer):
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
-  barber = BarberSerializer(read_only=True)
+  barber = SimpleBarberSerializer(read_only=True)
   customer = CustomerSerializer(read_only=True)
+
   class Meta:
     model = Appointment
     fields = ['id', 'barber', 'customer', 'created_at', 'appointment_date', 'appointment_start_time']
