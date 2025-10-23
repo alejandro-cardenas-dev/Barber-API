@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from users.models import User
 from barbers.models import Barber
 from customers.models import Customer
@@ -49,6 +48,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
       Customer.objects.create(user=user)
 
     return user
+
 
 class UserSerializer(serializers.ModelSerializer):
   class Meta:

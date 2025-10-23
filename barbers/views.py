@@ -1,13 +1,13 @@
-from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
 from appointments.models import Appointment
+from rest_framework import generics
 from barbers.models import Barber
 from barbers.serializers import BarberSerializer, EditBarberScheduleSerializer
 from permissions import IsBarber, IsCustomer
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from datetime import datetime
+from datetime import date, datetime
 from rest_framework.permissions import AllowAny
 
 
@@ -18,13 +18,13 @@ class GetBarber(generics.ListAPIView):
   permission_classes = [IsCustomer]
 
 
-# Get Barbers' Working Hours
+# Get Barbers' Working Hours In Specifc Date
 class GetBarberAvailableTimesSpecificDate(APIView):
   permission_classes = [IsCustomer]
 
   def get(self, request, barber_id):
     barber = get_object_or_404(Barber, id=barber_id)
-
+    today = date.today()
     date_str = request.query_params.get('date')
 
     if not date_str:
@@ -34,6 +34,9 @@ class GetBarberAvailableTimesSpecificDate(APIView):
       selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
     except ValueError:
       return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
+
+    if selected_date < today:
+      return Response({'error': 'You cannot see schedules for previous dates.'})
 
     available_times = barber.get_available_times()
 
