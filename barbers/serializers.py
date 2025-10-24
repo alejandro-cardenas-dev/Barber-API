@@ -28,3 +28,12 @@ class EditBarberScheduleSerializer(serializers.ModelSerializer):
   class Meta:
     model = Barber
     fields = ['time_to_start_working', 'time_to_finish_working']
+
+  def validate(self, data):
+    start = data.get('time_to_start_working')
+    end = data.get('time_to_finish_working')
+
+    if start >= end:
+      raise serializers.ValidationError({'error': 'Start time cannot be greater than or equal to the end time.'})
+
+    return data
