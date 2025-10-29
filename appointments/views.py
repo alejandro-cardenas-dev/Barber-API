@@ -25,6 +25,9 @@ class CreateAppointment(generics.CreateAPIView):
   serializer_class = CreateAppointmentSerializer
   permission_classes = [IsCustomer]
 
+  def perform_create(self, serializer):
+    instance = Customer.objects.get(user=self.request.user)
+    serializer.save(customer=instance)
 
 # Delete Appointment
 class DeleteAppointment(generics.DestroyAPIView):

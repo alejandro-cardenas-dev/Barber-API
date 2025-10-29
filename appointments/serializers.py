@@ -9,7 +9,7 @@ from customers.serializers import CustomerSerializer
 class CreateAppointmentSerializer(serializers.ModelSerializer):
   class Meta:
     model = Appointment
-    fields = ['id', 'barber', 'customer', 'created_at', 'appointment_date', 'appointment_start_time']
+    fields = ['id', 'barber', 'created_at', 'appointment_date', 'appointment_start_time']
 
   def validate_appointment_date(self, value):
     today = date.today()
