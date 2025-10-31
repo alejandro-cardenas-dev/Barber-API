@@ -71,7 +71,7 @@ class GetBarberAvailableTimesSpecificDate(APIView):
     if selected_date < today:
       return Response({'error': 'You cannot see schedules for previous dates.'})
 
-    available_times = barber.get_available_times()
+    available_times = barber.get_barber_working_hours()
 
     appointments = Appointment.objects.filter(barber=barber, appointment_date=selected_date)
     booked_appointments = appointments.values_list('appointment_start_time', flat=True)

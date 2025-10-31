@@ -11,7 +11,7 @@ class Barber(models.Model):
   lunch_end_time = models.TimeField(default=time(14, 0))
 
   @staticmethod
-  def validate_schedule_values(work_start_time, work_end_time, lunch_start_time, lunch_end_time):
+  def validate_schedule_values_creation(work_start_time, work_end_time, lunch_start_time, lunch_end_time):
     if work_start_time >= work_end_time:
       raise ValidationError('Work start time must be earlier than finish time.')
 
@@ -25,7 +25,7 @@ class Barber(models.Model):
       raise ValidationError({'lunch_end_time': 'Lunch end time must be during working hours.'})
 
   def clean(self):
-    self.validate_schedule_values(
+    self.validate_schedule_values_creation(
       self.work_start_time,
       self.work_end_time,
       self.lunch_start_time,
@@ -38,8 +38,7 @@ class Barber(models.Model):
     super().save(*args, **kwargs)
 
 
-  # Feat: change name get_available_times -> get_barber_work_times
-  def get_available_times(self, interval=30):
+  def get_barber_working_hours(self, interval=30):
     times = []
     rest_times = []
 

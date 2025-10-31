@@ -30,7 +30,7 @@ class CreateAppointmentSerializer(serializers.ModelSerializer):
     except Barber.DoesNotExist:
       raise serializers.ValidationError('Barber does not exist.')
 
-    available_times = barber.get_available_times()
+    available_times = barber.get_barber_working_hours()
 
     if value not in available_times:
       raise serializers.ValidationError('Time not available for this barber.')
