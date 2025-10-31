@@ -136,4 +136,8 @@ SIMPLE_JWT = {
 }
 
 
+USE_TZ = True
+TIME_ZONE = "America/Bogota"
+
+
 AUTH_USER_MODEL = 'users.User'

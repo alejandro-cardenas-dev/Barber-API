@@ -57,6 +57,8 @@ class GetBarberAvailableTimesSpecificDate(APIView):
     barber = get_object_or_404(Barber, id=barber_id)
     today = date.today()
     date_str = request.query_params.get('date')
+    time = datetime.now()
+    time_str = time.strftime('%H:%M')
 
     if not date_str:
       return Response({'error': 'Missing date parameter. Example: ?date=2025-10-20'}, status=400)
@@ -77,8 +79,11 @@ class GetBarberAvailableTimesSpecificDate(APIView):
     available_times_for_date = []
 
     for times in available_times:
-      if times not in booked_appointments:
-        available_times_for_date.append(times)
+      if times in booked_appointments:
+        continue
+      if today == selected_date and time_str >= times:
+        continue
+      available_times_for_date.append(times)
 
     return Response({
       'barber': barber.user.first_name,
