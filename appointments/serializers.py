@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from datetime import date
+from datetime import date, datetime
 from appointments.models import Appointment
 from barbers.models import Barber
 from barbers.serializers import SimpleBarberSerializer
@@ -19,23 +19,28 @@ class CreateAppointmentSerializer(serializers.ModelSerializer):
 
     return value
 
-  def validate_appointment_start_time(self, value):
-    barber_id = self.initial_data.get('barber')
+  def validate(self, attrs):
+    today =  date.today()
+    now = datetime.now().strftime('%H:%M')
+    barber = attrs['barber']
+    appointment_date = attrs['appointment_date']
+    appointment_date_str = attrs['appointment_date'].strftime('%Y-%m-%d')
+    appointment_start_time = attrs['appointment_start_time']
 
-    if not barber_id:
+    if not barber:
       raise serializers.ValidationError('You must specify a barber.')
 
-    try:
-      barber = Barber.objects.get(id=barber_id)
-    except Barber.DoesNotExist:
-      raise serializers.ValidationError('Barber does not exist.')
+    booked_appointments = Appointment.objects.filter(
+      barber=barber,
+      appointment_date=appointment_date_str
+    ).values_list('appointment_start_time', flat=True)
 
-    available_times = barber.get_barber_working_hours()
+    available_times = barber.get_barber_available_times(booked_appointments, today, now, appointment_date)
 
-    if value not in available_times:
+    if appointment_start_time not in available_times:
       raise serializers.ValidationError('Time not available for this barber.')
 
-    return value
+    return attrs
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
