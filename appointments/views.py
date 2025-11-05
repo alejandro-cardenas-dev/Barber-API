@@ -1,10 +1,9 @@
 from rest_framework import generics
 from appointments.models import Appointment
 from appointments.serializers import AppointmentSerializer, CreateAppointmentSerializer
-from barbers.models import Barber
 from customers.models import Customer
-from permissions import IsBarber, IsCustomer, IsOwner
-from rest_framework.permissions import AllowAny
+from permissions import IsCustomer, IsOwner
+from rest_framework.permissions import IsAuthenticated
 
 # Create Appointment
 class CreateAppointment(generics.CreateAPIView):
@@ -45,42 +44,23 @@ class DeleteAppointment(generics.DestroyAPIView):
   permission_classes = [IsOwner]
 
 
-# Get Appointment For Customer-Owner
-class GetCustomerAppointment(generics.ListAPIView):
+# Get Appointments
+class GetAppointment(generics.ListAPIView):
   """
-    Retrieve all appointments for the logged-in customer.
-
-    **Response:**
-    - 200: List of appointments
-  """
-  queryset = Appointment.objects.all()
-  serializer_class = AppointmentSerializer
-  permission_classes = [IsCustomer]
-
-  def get_queryset(self):
-    customer = Customer.objects.get(user__email=self.request.user)
-
-    if not customer:
-      return Appointment.objects.none()
-
-    return Appointment.objects.filter(customer=customer)
-
-
-# Get Appointments For Each Barber
-class GetBarberAppointment(generics.ListAPIView):
-  """
-    Retrieve all appointments for the logged-in barber.
+    Get all appointments for the owner.
 
     **Response:**
     - 200: List of appointments
   """
   serializer_class = AppointmentSerializer
-  permission_classes = [IsBarber]
+  permission_classes = [IsAuthenticated]
 
   def get_queryset(self):
-    barber = Barber.objects.get(user__email=self.request.user)
+    user = self.request.user
 
-    if not barber:
-      return Appointment.objects.none()
-
-    return Appointment.objects.filter(barber=barber)
+    if user.is_barber:
+      instance = user.barber
+      return Appointment.objects.filter(barber=instance)
+    elif user.is_customer:
+      instance = user.customer
+      return Appointment.objects.filter(customer=instance)
