@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from datetime import date, datetime
 from rest_framework.permissions import AllowAny
 from rest_framework.exceptions import ValidationError
+from permissions import IsOwner
 
 # Get Barbers
 class GetBarber(generics.ListAPIView):
@@ -87,24 +88,26 @@ class GetBarberAvailableTimesSpecificDate(APIView):
     })
 
 
-# Edit Barber Schedule For Working
-class EditBarberSchedule(generics.UpdateAPIView):
+# Get and Update Barber Schedule
+class BarberScheduleView(generics.RetrieveUpdateAPIView):
   """
-    Edit the working schedule of the logged-in barber.
+    Retrieve or update the working schedule of the logged-in barber.
+
+    **GET:** Returns the current working schedule.
+    **PUT/PATCH:** Updates one or more schedule fields.
 
     Only accessible by barbers themselves.
 
-    **Request Body:**
-    - start_time (time field, optional): Start of working hours (format HH:MM)
-    - end_time (time field, optional): End of working hours (format HH:MM)
-    - lunch_start (time field, optional): Start of lunch hours (format HH:MM)
-    - lunch_end (time field, optional): End of lunch hours (format HH:MM)
+    **Request Body (for PUT/PATCH):**
+    - work_start_time (HH:MM)
+    - work_end_time (HH:MM)
+    - lunch_start_time (HH:MM)
+    - lunch_end_time (HH:MM)
 
     **Response:**
-    - 200: Updated barber schedule.
-    - 404: Barber not found for the logged-in user.
+    - 200: Schedule data (both GET and PUT).
+    - 404: Barber not found.
   """
-  queryset = Barber.objects.all()
   serializer_class = EditBarberScheduleSerializer
   permission_classes = [IsBarber]
 
@@ -113,4 +116,4 @@ class EditBarberSchedule(generics.UpdateAPIView):
     try:
       return Barber.objects.get(user=user)
     except Barber.DoesNotExist:
-      raise NotFound('No barber has been found for this user.')
+      raise NotFound("No barber has been found for this user.")
