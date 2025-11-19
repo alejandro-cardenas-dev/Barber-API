@@ -8,7 +8,7 @@ class Appointment(models.Model):
   customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
   created_at = models.DateTimeField(auto_now_add=True)
   appointment_date = models.DateField()
-  appointment_start_time = models.CharField(max_length=5)
+  appointment_start_time = models.TimeField()
 
   class Meta:
     unique_together = ('barber', 'appointment_date', 'appointment_start_time')

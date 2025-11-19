@@ -63,4 +63,4 @@ class GetAppointment(generics.ListAPIView):
       return Appointment.objects.filter(barber=instance)
     elif user.is_customer:
       instance = user.customer
-      return Appointment.objects.filter(customer=instance).order_by('appointment_date')
+      return Appointment.objects.filter(customer=instance).order_by('appointment_date', 'appointment_start_time')
