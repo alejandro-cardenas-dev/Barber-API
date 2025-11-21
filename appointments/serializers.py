@@ -25,7 +25,7 @@ class CreateAppointmentSerializer(serializers.ModelSerializer):
     barber = attrs['barber']
     appointment_date = attrs['appointment_date']
     appointment_date_str = attrs['appointment_date'].strftime('%Y-%m-%d')
-    appointment_start_time = attrs['appointment_start_time']
+    appointment_start_time = attrs['appointment_start_time'].strftime('%H:%M')
 
     if not barber:
       raise serializers.ValidationError('You must specify a barber.')
@@ -37,6 +37,7 @@ class CreateAppointmentSerializer(serializers.ModelSerializer):
 
     available_times = barber.get_barber_available_times(booked_appointments, today, now, appointment_date)
 
+    # breakpoint()
     if appointment_start_time not in available_times:
       raise serializers.ValidationError('Time not available for this barber.')
 
