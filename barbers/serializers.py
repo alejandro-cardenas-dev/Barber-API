@@ -28,7 +28,7 @@ class SimpleBarberSerializer(serializers.ModelSerializer):
 class EditBarberScheduleSerializer(serializers.ModelSerializer):
   class Meta:
     model = Barber
-    fields = ['work_start_time', 'work_end_time', 'lunch_start_time', 'lunch_end_time']
+    fields = ['work_start_time', 'work_end_time', 'lunch_start_time', 'lunch_end_time', 'last_update']
 
   def validate(self, data):
     instance = getattr(self, 'instance', None)
