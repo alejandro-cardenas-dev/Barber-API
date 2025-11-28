@@ -15,8 +15,9 @@ class CreateUserSerializer(serializers.ModelSerializer):
       'password', 'password2', 'is_barber', 'is_customer'
     ]
 
-  # future: add password validations
   def validate(self, attrs):
+    attrs = super().validate(attrs)
+
     if attrs['password'] != attrs['password2']:
       raise serializers.ValidationError(
         {"password": "Password do not match."}
@@ -27,6 +28,35 @@ class CreateUserSerializer(serializers.ModelSerializer):
       )
 
     return attrs
+
+  def validate_password(self, value):
+    if len(value) < 8:
+      raise serializers.ValidationError(
+        {"password": "Password must contain 8 or more characters"}
+      )
+    return value
+
+  def validate_phone(self, value):
+    if len(value) != 10:
+      raise serializers.ValidationError(
+        {"phone": "Phone must contain exactly 10 digits"}
+      )
+    return value
+
+  def validate_first_name(self, value):
+    if len(value) < 3:
+      raise serializers.ValidationError(
+        {"first_name": "Name must have 3 or more characters"}
+      )
+    return value
+
+  def validate_last_name(self, value):
+    if len(value) < 3:
+      raise serializers.ValidationError(
+        {"last_name": "Last name must have 3 or more characters"}
+      )
+    return value
+
 
   def create(self, validated_data):
     password = validated_data.pop('password')
