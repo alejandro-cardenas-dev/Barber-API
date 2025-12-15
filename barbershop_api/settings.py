@@ -52,7 +52,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
-ROOT_URLCONF = 'barber.urls'
+ROOT_URLCONF = 'barbershop_api.urls'
 
 TEMPLATES = [
     {
@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'barber.wsgi.application'
+WSGI_APPLICATION = 'barbershop_api.wsgi.application'
 
 
 # Database
