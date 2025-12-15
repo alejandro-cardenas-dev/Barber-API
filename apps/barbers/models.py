@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, date, time
+from datetime import datetime, timedelta, time
 from django.conf import settings
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -63,19 +63,6 @@ class Barber(models.Model):
       current += timedelta(minutes=interval)
 
     return times
-
-  def get_barber_available_times(self, booked_appointments, today, now, selected_date):
-    working_hours = self.get_barber_working_hours()
-    available_times_for_date = []
-
-    for times in working_hours:
-      if times in booked_appointments:
-        continue
-      if today == selected_date and now >= times:
-        continue
-      available_times_for_date.append(times)
-
-    return available_times_for_date
 
   def __str__(self):
     return f'Barber: {self.user.first_name} {self.user.last_name}'

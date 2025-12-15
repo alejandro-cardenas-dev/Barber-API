@@ -1,16 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
-from apps.appointments.models import Appointment
 from rest_framework import generics
 from apps.barbers.models import Barber
 from apps.barbers.serializers import BarberSerializer, EditBarberScheduleSerializer
+from apps.barbers.service.availability import calculate_barber_availability_for_date
+
 from permissions import IsBarber, IsCustomer
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from datetime import date, datetime
-from rest_framework.permissions import AllowAny
+from datetime import datetime
 from rest_framework.exceptions import ValidationError
-from permissions import IsOwner
 
 # Get Barbers
 class GetBarber(generics.ListAPIView):
@@ -55,12 +54,8 @@ class GetBarberAvailableTimesSpecificDate(APIView):
   permission_classes = [IsCustomer]
 
   def get(self, request, barber_id):
-    today =  date.today()
-    now = datetime.now().strftime('%H:%M')
-
     barber = get_object_or_404(Barber, id=barber_id)
     date_str = request.query_params.get('date')
-
 
     if not date_str:
       raise ValidationError({'error': 'Missing date parameter. Example: ?date=2025-10-20'}, code=400)
@@ -70,17 +65,10 @@ class GetBarberAvailableTimesSpecificDate(APIView):
     except ValueError:
       raise ValidationError({'error': 'Invalid date format. Use YYYY-MM-DD.'})
 
-    if selected_date < today:
-      raise ValidationError({'error': 'You cannot see schedules for previous dates.'})
-
-    booked_appointments = list(Appointment.objects.filter(
+    available_times = calculate_barber_availability_for_date(
       barber=barber,
-      appointment_date=date_str
-    ).values_list('appointment_start_time', flat=True))
-
-    booked_appointments = [t.strftime("%H:%M") for t in booked_appointments]
-
-    available_times = barber.get_barber_available_times(booked_appointments, today, now, selected_date)
+      selected_date=selected_date
+    )
 
     return Response({
       'barber': barber.user.first_name,
