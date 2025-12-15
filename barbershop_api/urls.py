@@ -29,9 +29,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('', include('users.urls')),
-    path('', include('barbers.urls')),
-    path('', include('appointments.urls')),
+    path('', include('apps.users.urls')),
+    path('', include('apps.barbers.urls')),
+    path('', include('apps.appointments.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='redoc'),
 ]
