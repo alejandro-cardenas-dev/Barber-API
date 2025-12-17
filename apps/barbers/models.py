@@ -40,7 +40,7 @@ class Barber(models.Model):
     super().save(*args, **kwargs)
 
 
-  def get_barber_working_hours(self, interval=30):
+  def generate_working_time_slots(self, interval=30):
     times = []
     rest_times = []
 

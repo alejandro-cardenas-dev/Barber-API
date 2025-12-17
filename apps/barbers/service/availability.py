@@ -5,7 +5,6 @@ from apps.appointments.models import Appointment
 def calculate_barber_availability_for_date (barber, selected_date):
   today = date.today()
   now = datetime.now().strftime('%H:%M')
-  # breakpoint()
 
   if selected_date < today:
     raise ValidationError('You cannot see schedules for previous dates.')
@@ -17,7 +16,7 @@ def calculate_barber_availability_for_date (barber, selected_date):
 
   booked_times = [times.strftime('%H:%M') for times in booked_times]
 
-  working_hours = barber.get_barber_working_hours()
+  working_hours = barber.generate_working_time_slots()
 
   available_times = []
 
