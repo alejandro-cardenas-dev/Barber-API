@@ -25,6 +25,18 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+
+  class Meta:
+    constraints = [
+      models.CheckConstraint(
+        check=(
+          models.Q(is_barber=True, is_customer=False) |
+          models.Q(is_barber=False, is_customer=True)
+        ),
+        name='user_must_have_exactly_one_role'
+      )
+    ]
+
   email = models.EmailField(unique=True)
   first_name = models.CharField(max_length=50)
   last_name = models.CharField(max_length=50)
