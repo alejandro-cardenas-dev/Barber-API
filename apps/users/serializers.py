@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from apps.users.models import User
-from apps.barbers.models import Barber
-from apps.customers.models import Customer
+from apps.users.services.user_registration import register_user
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -62,23 +61,10 @@ class CreateUserSerializer(serializers.ModelSerializer):
     password = validated_data.pop('password')
     validated_data.pop('password2')
 
-    is_barber = validated_data.pop('is_barber', False)
-    is_customer = validated_data.pop('is_customer', False)
-
-    user = User.objects.create_user(
-      **validated_data,
+    return register_user(
       password=password,
-      is_barber=is_barber,
-      is_customer=is_customer
+      **validated_data
     )
-
-    if user.is_barber:
-      Barber.objects.create(user=user)
-    elif user.is_customer:
-      Customer.objects.create(user=user)
-
-    return user
-
 
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
