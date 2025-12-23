@@ -1,5 +1,7 @@
 from django.urls import path
-from apps.appointments.views import CreateAppointment, DeleteAppointment, GetAppointment
+from apps.appointments.views.create import CreateAppointment
+from apps.appointments.views.list import GetAppointment
+from apps.appointments.views.delete import DeleteAppointment
 
 urlpatterns = [
   path('create-appointment/', CreateAppointment.as_view()),
