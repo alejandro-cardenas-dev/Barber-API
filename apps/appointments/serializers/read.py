@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from apps.appointments.models import Appointment
-from apps.barbers.serializers import SimpleBarberSerializer
-from apps.customers.serializers import CustomerSerializer
+from apps.barbers.serializers.simple_reading import SimpleBarberSerializer
+from apps.customers.serializers.read import CustomerSerializer
 
 class AppointmentSerializer(serializers.ModelSerializer):
   barber = SimpleBarberSerializer(read_only=True)
