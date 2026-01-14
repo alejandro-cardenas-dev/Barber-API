@@ -65,8 +65,3 @@ class CreateUserSerializer(serializers.ModelSerializer):
       password=password,
       **validated_data
     )
-
-class UserSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = User
-    fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'is_barber', 'is_customer']
