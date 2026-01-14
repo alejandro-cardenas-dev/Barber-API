@@ -1,7 +1,7 @@
 from rest_framework import serializers
-
+from apps.users.serializers.read import UserSerializer
 from apps.customers.models import Customer
-from apps.users.serializers import UserSerializer
+
 
 class CustomerSerializer(serializers.ModelSerializer):
   user = UserSerializer(read_only=True)
