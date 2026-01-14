@@ -1,30 +1,11 @@
 from rest_framework.views import APIView
-from rest_framework.exceptions import NotFound
-from rest_framework import generics
 from apps.barbers.models import Barber
-from apps.barbers.serializers import BarberSerializer, EditBarberScheduleSerializer
 from apps.barbers.service.availability import calculate_barber_availability_for_date
-
-from permissions import IsBarber, IsCustomer
+from permissions import IsCustomer
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from datetime import datetime
 from rest_framework.exceptions import ValidationError
-
-# Get Barbers
-class GetBarber(generics.ListAPIView):
-  """
-    Retrieve a list of all barbers.
-
-    Only accessible by customers.
-
-    **Response:**
-    - 200: List of barbers with their basic information.
-  """
-  queryset = Barber.objects.all()
-  serializer_class = BarberSerializer
-  permission_classes = [IsCustomer]
-
 
 # Get Barbers' Working Hours In Specifc Date
 class GetBarberAvailableTimesSpecificDate(APIView):
@@ -75,34 +56,3 @@ class GetBarberAvailableTimesSpecificDate(APIView):
       'date': date_str,
       'available_times': available_times
     })
-
-
-# Get and Update Barber Schedule
-class BarberScheduleView(generics.RetrieveUpdateAPIView):
-  """
-    Retrieve or update the working schedule of the logged-in barber.
-
-    **GET:** Returns the current working schedule.
-    **PUT/PATCH:** Updates one or more schedule fields.
-
-    Only accessible by barbers themselves.
-
-    **Request Body (for PUT/PATCH):**
-    - work_start_time (HH:MM)
-    - work_end_time (HH:MM)
-    - lunch_start_time (HH:MM)
-    - lunch_end_time (HH:MM)
-
-    **Response:**
-    - 200: Schedule data (both GET and PUT).
-    - 404: Barber not found.
-  """
-  serializer_class = EditBarberScheduleSerializer
-  permission_classes = [IsBarber]
-
-  def get_object(self):
-    user = self.request.user
-    try:
-      return Barber.objects.get(user=user)
-    except Barber.DoesNotExist:
-      raise NotFound("No barber has been found for this user.")

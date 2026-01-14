@@ -1,6 +1,8 @@
 from django.urls import path
 
-from apps.barbers.views import BarberScheduleView, GetBarber, GetBarberAvailableTimesSpecificDate
+from apps.barbers.views.barber_schedules import BarberScheduleView
+from apps.barbers.views.list import GetBarber
+from apps.barbers.views.working_hours import GetBarberAvailableTimesSpecificDate
 
 urlpatterns = [
   path('get-barbers/', GetBarber.as_view()),
