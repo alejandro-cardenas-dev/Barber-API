@@ -15,7 +15,7 @@ def register_user (
     is_customer
 ):
 
-  user = User.objects.create(
+  user = User.objects.create_user(
     email=email,
     password=password,
     first_name=first_name,
