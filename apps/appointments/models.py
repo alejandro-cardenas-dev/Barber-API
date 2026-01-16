@@ -2,11 +2,13 @@ from django.core.exceptions import ValidationError
 from datetime import date, datetime
 from django.db import models
 from apps.barbers.models import Barber
+from apps.catalog.models import Service
 from apps.customers.models import Customer
 
 class Appointment(models.Model):
   barber = models.ForeignKey(Barber, on_delete=models.CASCADE)
   customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+  service = models.ForeignKey(Service, on_delete=models.CASCADE)
   created_at = models.DateTimeField(auto_now_add=True)
   appointment_date = models.DateField()
   appointment_start_time = models.TimeField()

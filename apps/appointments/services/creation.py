@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from apps.appointments.models import Appointment
 from apps.barbers.service.availability import calculate_barber_availability_for_date
 
-def create_appointment(*, barber, customer, appointment_date, appointment_start_time):
+def create_appointment(*, barber, customer, service, appointment_date, appointment_start_time):
   today = date.today()
 
   if appointment_date < today:
@@ -25,10 +25,12 @@ def create_appointment(*, barber, customer, appointment_date, appointment_start_
     Appointment.objects.create(
       barber=barber,
       customer=customer,
+      service=service,
       appointment_date= appointment_date,
       appointment_start_time=appointment_start_time
     )
   except:
     raise ValidationError({
-      'appointment_start_time': 'This time slot has just been booked.'
+      # feat -> Change error message
+      'error': 'Something went wrong, please check the fields.'
     })

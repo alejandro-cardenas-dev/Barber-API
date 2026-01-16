@@ -4,7 +4,7 @@ from apps.appointments.models import Appointment
 class CreateAppointmentSerializer(serializers.ModelSerializer):
   class Meta:
     model = Appointment
-    fields = ['id', 'barber', 'created_at', 'appointment_date', 'appointment_start_time']
+    fields = ['id', 'barber', 'service', 'created_at', 'appointment_date', 'appointment_start_time']
 
   def create(self, validated_data):
     from apps.appointments.services.creation import create_appointment
