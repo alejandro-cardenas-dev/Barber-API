@@ -4,6 +4,6 @@ from apps.users.views.get_own_user import GetUser
 
 
 urlpatterns = [
-  path('create-account/', CreateUserView.as_view()),
-  path('get-user/', GetUser.as_view()),
+  path('users/', CreateUserView.as_view(), name='create-account'),
+  path('users/me/', GetUser.as_view(), name='user-detail'),
 ]
