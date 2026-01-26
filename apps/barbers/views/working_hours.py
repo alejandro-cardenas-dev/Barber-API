@@ -8,7 +8,7 @@ from datetime import datetime
 from rest_framework.exceptions import ValidationError
 
 # Get Barbers' Working Hours In Specifc Date
-class GetBarberAvailableTimesSpecificDate(APIView):
+class BarberAvailabilityByDateView(APIView):
   """
     Get available working hours for a specific barber on a given date.
 

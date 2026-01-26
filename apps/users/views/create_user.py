@@ -4,7 +4,7 @@ from apps.users.serializers.create import CreateUserSerializer
 
 
 # Create Users
-class CreateUserView(generics.CreateAPIView):
+class UserCreateView(generics.CreateAPIView):
   """
     Register a new user.
 

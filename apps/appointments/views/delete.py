@@ -4,7 +4,7 @@ from apps.appointments.serializers.read import AppointmentSerializer
 from permissions import IsOwner
 
 # Delete Appointment
-class DeleteAppointment(generics.DestroyAPIView):
+class AppointmentDeleteView(generics.DestroyAPIView):
   """
     Delete an existing appointment.
 

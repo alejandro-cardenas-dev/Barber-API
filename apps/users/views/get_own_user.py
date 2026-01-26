@@ -4,7 +4,7 @@ from permissions import IsOwner
 
 
 # Get Personal User
-class GetUser(generics.RetrieveAPIView):
+class UserDetailView(generics.RetrieveAPIView):
   """
     Retrieve the authenticated user's profile information.
 

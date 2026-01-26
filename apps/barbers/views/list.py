@@ -4,7 +4,7 @@ from apps.barbers.serializers.read import BarberSerializer
 from permissions import IsCustomer
 
 # Get Barbers
-class GetBarber(generics.ListAPIView):
+class BarberListView(generics.ListAPIView):
   """
     Retrieve a list of all barbers.
 

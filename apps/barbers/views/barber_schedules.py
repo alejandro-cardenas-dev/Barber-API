@@ -5,7 +5,7 @@ from apps.barbers.serializers.edit import EditBarberScheduleSerializer
 from permissions import IsBarber
 
 # Get and Update Barber Schedule
-class BarberScheduleView(generics.RetrieveUpdateAPIView):
+class BarberScheduleListUpdateView(generics.RetrieveUpdateAPIView):
   """
     Retrieve or update the working schedule of the logged-in barber.
 

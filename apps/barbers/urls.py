@@ -1,15 +1,15 @@
 from django.urls import path
 
-from apps.barbers.views.barber_schedules import BarberScheduleView
-from apps.barbers.views.list import GetBarber
-from apps.barbers.views.working_hours import GetBarberAvailableTimesSpecificDate
+from apps.barbers.views.barber_schedules import BarberScheduleListUpdateView
+from apps.barbers.views.list import BarberListView
+from apps.barbers.views.working_hours import BarberAvailabilityByDateView
 
 urlpatterns = [
-  path('barbers/', GetBarber.as_view(), name='barber-list'),
-  path('barbers/me/schedule/', BarberScheduleView.as_view(), name='barber-schedule'),
+  path('barbers/', BarberListView.as_view(), name='barber-list'),
+  path('barbers/me/schedule/', BarberScheduleListUpdateView.as_view(), name='barber-schedule'),
   path(
     'barbers/<int:barber_id>/available-times/',
-    GetBarberAvailableTimesSpecificDate.as_view(),
+    BarberAvailabilityByDateView.as_view(),
     name='barber-available-times'
   )
 ]
