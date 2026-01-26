@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from datetime import date, datetime
 from apps.appointments.models import Appointment
 
@@ -7,7 +7,9 @@ def calculate_barber_availability_for_date (barber, selected_date):
   now = datetime.now().strftime('%H:%M')
 
   if selected_date < today:
-    raise ValidationError('You cannot see schedules for previous dates.')
+    raise ValidationError({
+      'error': 'You cannot see schedules for previous dates.'
+    })
 
   booked_times = set(Appointment.objects.filter(
     barber=barber,
