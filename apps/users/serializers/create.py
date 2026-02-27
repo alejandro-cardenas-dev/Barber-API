@@ -47,7 +47,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     if attrs['password'] != attrs['password2']:
       raise serializers.ValidationError(
-        {"password": "Password do not match."}
+        {"password": "Passwords do not match."}
       )
     if attrs.get('is_barber') == attrs.get('is_customer'):
       raise serializers.ValidationError(

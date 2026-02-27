@@ -13,6 +13,9 @@ class CustomUserManager(BaseUserManager):
     return user
 
   def create_superuser(self, email, password=None, **extra_fields):
+    if not password:
+      raise ValueError('Superuser must have a password')
+
     extra_fields.setdefault('is_staff', True)
     extra_fields.setdefault('is_superuser', True)
 
@@ -31,7 +34,8 @@ class User(AbstractBaseUser, PermissionsMixin):
       models.CheckConstraint(
         check=(
           models.Q(is_barber=True, is_customer=False) |
-          models.Q(is_barber=False, is_customer=True)
+          models.Q(is_barber=False, is_customer=True) |
+          models.Q(is_barber=False, is_customer=False, is_staff=True)
         ),
         name='user_must_have_exactly_one_role'
       )

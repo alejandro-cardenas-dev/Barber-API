@@ -4,7 +4,7 @@ from apps.customers.models import Customer
 from apps.users.models import User
 
 @transaction.atomic
-def register_user (
+def register_user(
     *,
     email,
     password,
