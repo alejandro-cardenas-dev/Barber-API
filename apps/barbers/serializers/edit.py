@@ -6,6 +6,7 @@ class EditBarberScheduleSerializer(serializers.ModelSerializer):
   class Meta:
     model = Barber
     fields = ['work_start_time', 'work_end_time', 'lunch_start_time', 'lunch_end_time', 'last_update']
+    read_only_fields = ['last_update']
 
   def validate(self, data):
     instance = getattr(self, 'instance', None)
@@ -18,6 +19,6 @@ class EditBarberScheduleSerializer(serializers.ModelSerializer):
     try:
       Barber.validate_schedule_values_creation(work_start, work_end, lunch_start, lunch_end)
     except DjangoValidationError as error:
-      raise serializers.ValidationError({'deatil': error.messages})
+      raise serializers.ValidationError({'detail': error.messages})
 
     return data

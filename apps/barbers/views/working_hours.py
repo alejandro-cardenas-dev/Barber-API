@@ -39,19 +39,23 @@ class BarberAvailabilityByDateView(APIView):
     date_str = request.query_params.get('date')
 
     if not date_str:
-      raise ValidationError({'error': 'Missing date parameter. Example: ?date=2025-10-20'}, code=400)
+      raise ValidationError({'error': 'Missing date parameter. Example: ?date=2025-10-20'})
 
     try:
       selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
     except ValueError:
       raise ValidationError({'error': 'Invalid date format. Use YYYY-MM-DD.'})
 
-    available_times = calculate_barber_availability_for_date(
-      barber=barber,
-      selected_date=selected_date
-    )
+    try:
+      available_times = calculate_barber_availability_for_date(
+        barber=barber,
+        selected_date=selected_date
+      )
+    except ValueError as e:
+      raise ValidationError({'error': str(e)})
 
     return Response({
+      'barber_id': barber.id,
       'barber': barber.user.first_name,
       'date': date_str,
       'available_times': available_times
