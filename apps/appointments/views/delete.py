@@ -1,7 +1,7 @@
 from rest_framework import generics
 from apps.appointments.models import Appointment
 from apps.appointments.serializers.read import AppointmentSerializer
-from permissions import IsOwner
+from permissions import IsAppointmentOwner
 
 # Delete Appointment
 class AppointmentDeleteView(generics.DestroyAPIView):
@@ -16,4 +16,4 @@ class AppointmentDeleteView(generics.DestroyAPIView):
   """
   queryset = Appointment.objects.all()
   serializer_class = AppointmentSerializer
-  permission_classes = [IsOwner]
+  permission_classes = [IsAppointmentOwner]

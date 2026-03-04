@@ -1,6 +1,6 @@
 from rest_framework import generics
 from apps.users.serializers.read import UserSerializer
-from permissions import IsOwner
+from permissions import IsAppointmentOwner
 
 
 # Get Personal User
@@ -11,7 +11,7 @@ class UserDetailView(generics.RetrieveAPIView):
     This endpoint allows an authenticated user to fetch their own data.
 
     **Permissions:**
-    - Only accessible to the owner of the account (IsOwner).
+    - Only accessible to the owner of the account (IsAppointmentOwner).
 
     **Request:**
     - Method: GET
@@ -32,7 +32,7 @@ class UserDetailView(generics.RetrieveAPIView):
     - 401: Unauthorized (if token is missing or invalid)
   """
   serializer_class = UserSerializer
-  permission_classes = [IsOwner]
+  permission_classes = [IsAppointmentOwner]
 
   def get_object(self):
     return self.request.user
