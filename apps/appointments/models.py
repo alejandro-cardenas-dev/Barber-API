@@ -14,23 +14,12 @@ class Appointment(models.Model):
   appointment_start_time = models.TimeField()
 
   class Meta:
-    unique_together = ('barber', 'appointment_date', 'appointment_start_time')
-
-  def clean(self):
-    today = date.today()
-    now = datetime.now()
-
-    if self.appointment_date < today:
-      raise ValidationError({
-        'appointment_date': 'You cannot schedule an appointment for a past date.'
-      })
-
-    if self.appointment_date == today and self.appointment_start_time <= now:
-      raise ValidationError({
-        'appointment_start_time': 'You cannot schedule an appointment for a past time.'
-      })
-
-    return super().clean()
+    constraints = [
+      models.UniqueConstraint(
+        fields=['barber', 'appointment_date', 'appointment_start_time'],
+        name='unique_barber_appointment_slot'
+      )
+    ]
 
   def __str__(self):
     return (

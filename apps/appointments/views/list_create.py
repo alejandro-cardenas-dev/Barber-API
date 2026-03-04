@@ -3,7 +3,7 @@ from apps.appointments.models import Appointment
 from apps.appointments.serializers.create import CreateAppointmentSerializer
 from apps.appointments.serializers.read import AppointmentSerializer
 from apps.customers.models import Customer
-from permissions import IsCustomer
+from permissions import IsCustomer, IsCustomerOrBarber
 
 
 class AppointmentListCreateView(generics.ListCreateAPIView):
@@ -23,14 +23,18 @@ class AppointmentListCreateView(generics.ListCreateAPIView):
     user = self.request.user
 
     if user.is_barber:
-      return Appointment.objects.filter(barber=user.barber)
+      return Appointment.objects.filter(
+        barber=user.barber
+      ).select_related('barber__user', 'customer__user', 'service')
 
     if user.is_customer:
-      return Appointment.objects.filter(customer=user.customer)
+      return Appointment.objects.filter(
+        customer=user.customer
+      ).select_related('barber__user', 'customer__user', 'service')
 
-    return Appointment.objects.none() #chek this out
+    return Appointment.objects.none()
 
-  def get_serializer_context(self): #check this out
+  def get_serializer_context(self):
     context = super().get_serializer_context()
 
     if self.request.method == 'POST' and self.request.user.is_customer:
@@ -41,4 +45,4 @@ class AppointmentListCreateView(generics.ListCreateAPIView):
   def get_permissions(self):
     if self.request.method == 'POST':
       return [IsCustomer()]
-    return super().get_permissions()
+    return [IsCustomerOrBarber()]
