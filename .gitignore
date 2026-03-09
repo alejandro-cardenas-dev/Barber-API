@@ -5,3 +5,6 @@ __pycache__/
 # Local DB
 db.sqlite3
 
+# Environment variables
+.env
+.env.*
