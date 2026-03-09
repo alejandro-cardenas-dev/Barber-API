@@ -2,11 +2,16 @@ import re
 
 from django.contrib.auth.password_validation import validate_password as django_validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
-
 from rest_framework import serializers
 
 from apps.users.models import User
-from apps.users.services.user_registration import register_user
+from apps.users.services.user_services import register_user
+
+
+class UserSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'is_barber', 'is_customer']
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -29,38 +34,30 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
   def validate_phone(self, value):
     if not re.fullmatch(r'\d{10}', value):
-        raise serializers.ValidationError("Phone must contain exactly 10 digits.")
+      raise serializers.ValidationError('Phone must contain exactly 10 digits.')
     return value
 
   def validate_first_name(self, value):
     if len(value) < 3:
-      raise serializers.ValidationError("Name must have 3 or more characters")
+      raise serializers.ValidationError('Name must have 3 or more characters.')
     return value
 
   def validate_last_name(self, value):
     if len(value) < 3:
-      raise serializers.ValidationError("Last name must have 3 or more characters"  )
+      raise serializers.ValidationError('Last name must have 3 or more characters.')
     return value
 
   def validate(self, attrs):
     attrs = super().validate(attrs)
-
     if attrs['password'] != attrs['password2']:
-      raise serializers.ValidationError(
-        {"password": "Passwords do not match."}
-      )
+      raise serializers.ValidationError({'password': 'Passwords do not match.'})
     if attrs.get('is_barber') == attrs.get('is_customer'):
       raise serializers.ValidationError(
-        {"role": "User must be either a barber or a customer, not both or neither."}
+          {'role': 'User must be either a barber or a customer, not both or neither.'}
       )
-
     return attrs
 
   def create(self, validated_data):
     password = validated_data.pop('password')
     validated_data.pop('password2')
-
-    return register_user(
-      password=password,
-      **validated_data
-    )
+    return register_user(password=password, **validated_data)
