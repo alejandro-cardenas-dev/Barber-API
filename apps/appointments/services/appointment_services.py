@@ -2,7 +2,7 @@ from datetime import date
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from apps.appointments.models import Appointment
-from apps.barbers.service.availability import calculate_barber_availability_for_date
+from apps.barbers.services.barber_services import calculate_barber_availability_for_date
 
 
 def create_appointment(*, barber, customer, service, appointment_date, appointment_start_time):

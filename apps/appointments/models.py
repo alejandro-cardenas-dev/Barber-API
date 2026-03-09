@@ -1,17 +1,34 @@
-from django.core.exceptions import ValidationError
-from datetime import date, datetime
+from django.conf import settings
 from django.db import models
+from django.utils import timezone
+from datetime import datetime, timedelta
+
 from apps.barbers.models import Barber
 from apps.catalog.models import Service
 from apps.customers.models import Customer
 
+
+status_choices = (
+    ('confirmed', 'Confirmed'),
+    ('cancelled', 'Cancelled'),
+    ('completed', 'Completed'),
+)
+
+
 class Appointment(models.Model):
-  barber = models.ForeignKey(Barber, on_delete=models.CASCADE)
-  customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-  service = models.ForeignKey(Service, on_delete=models.CASCADE)
+  barber = models.ForeignKey(Barber, on_delete=models.CASCADE, related_name='appointments')
+  customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='appointments')
+  service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='appointments')
   created_at = models.DateTimeField(auto_now_add=True)
   appointment_date = models.DateField()
   appointment_start_time = models.TimeField()
+  status = models.CharField(max_length=10, choices=status_choices, default='confirmed')
+  cancelled_by = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.SET_NULL,
+    null=True, blank=True,
+    related_name='cancelled_appointments'
+  )
 
   class Meta:
     constraints = [
@@ -26,3 +43,9 @@ class Appointment(models.Model):
       f"{self.appointment_date} {self.appointment_start_time} - "
       f"{self.customer.user.first_name} with {self.barber.user.first_name}"
     )
+
+  @property
+  def is_completed(self):
+    appointment_dt = datetime.combine(self.appointment_date, self.appointment_start_time)
+    appointment_end = appointment_dt + timedelta(minutes=30)
+    return timezone.now() > timezone.make_aware(appointment_end)
