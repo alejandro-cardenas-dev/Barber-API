@@ -62,28 +62,5 @@ class Barber(models.Model):
 
     return times
 
-  # def generate_working_time_slots(self, interval=30):
-  #   times = []
-  #   rest_times = []
-
-  #   current = datetime.combine(datetime.today(), self.work_start_time)
-  #   end = datetime.combine(datetime.today(), self.work_end_time)
-  #   lunch_start = datetime.combine(datetime.today(), self.lunch_start_time)
-  #   lunch_end = datetime.combine(datetime.today(), self.lunch_end_time)
-
-  #   while lunch_start < lunch_end:
-  #     rest_times.append(lunch_start)
-  #     lunch_start += timedelta(minutes=interval)
-
-  #   while current < end:
-  #     if current in rest_times:
-  #       current += timedelta(minutes=interval)
-  #       continue
-
-  #     times.append(current.strftime('%H:%M'))
-  #     current += timedelta(minutes=interval)
-
-  #   return times
-
   def __str__(self):
     return f'Barber: {self.user.first_name} {self.user.last_name}'

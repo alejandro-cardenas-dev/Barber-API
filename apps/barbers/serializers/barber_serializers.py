@@ -1,0 +1,47 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework import serializers
+
+from apps.barbers.models import Barber
+from apps.users.serializers.user_serializers import UserSerializer
+
+
+class SimpleBarberSerializer(serializers.ModelSerializer):
+  user = UserSerializer(read_only=True)
+
+  class Meta:
+    model = Barber
+    fields = ['id', 'user']
+
+
+class BarberSerializer(serializers.ModelSerializer):
+  user = UserSerializer(read_only=True)
+  barber_working_hours = serializers.SerializerMethodField()
+
+  class Meta:
+    model = Barber
+    fields = [
+      'id', 'user', 'work_start_time', 'work_end_time',
+      'lunch_start_time', 'lunch_end_time', 'barber_working_hours'
+    ]
+
+  def get_barber_working_hours(self, obj):
+    return obj.generate_working_time_slots()
+
+
+class EditBarberScheduleSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Barber
+    fields = ['work_start_time', 'work_end_time', 'lunch_start_time', 'lunch_end_time', 'last_update']
+    read_only_fields = ['last_update']
+
+    def validate(self, data):
+      instance = getattr(self, 'instance', None)
+      work_start = data.get('work_start_time', getattr(instance, 'work_start_time', None))
+      work_end = data.get('work_end_time', getattr(instance, 'work_end_time', None))
+      lunch_start = data.get('lunch_start_time', getattr(instance, 'lunch_start_time', None))
+      lunch_end = data.get('lunch_end_time', getattr(instance, 'lunch_end_time', None))
+      try:
+        Barber.validate_schedule_values_creation(work_start, work_end, lunch_start, lunch_end)
+      except DjangoValidationError as error:
+        raise serializers.ValidationError({'detail': error.messages})
+      return data

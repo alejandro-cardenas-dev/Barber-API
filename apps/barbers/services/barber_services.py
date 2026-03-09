@@ -1,6 +1,6 @@
-from rest_framework.exceptions import ValidationError
 from datetime import date, datetime
 from apps.appointments.models import Appointment
+
 
 def calculate_barber_availability_for_date(barber, selected_date):
   today = date.today()
