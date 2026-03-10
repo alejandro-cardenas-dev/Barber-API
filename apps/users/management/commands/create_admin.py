@@ -4,14 +4,20 @@ from apps.users.models import User
 
 
 class Command(BaseCommand):
-  help = 'Creates a default admin user if none exists'
+  help = 'Creates or updates the default admin user'
 
   def handle(self, *args, **kwargs):
-    if not User.objects.filter(is_staff=True).exists():
-      User.objects.create_superuser(
-        email=os.environ.get('ADMIN_EMAIL', 'admin@barbershop.com'),
-        password=os.environ.get('ADMIN_PASSWORD', 'temporal123')
-      )
+    email = os.environ.get('ADMIN_EMAIL', 'admin@barbershop.com')
+    password = os.environ.get('ADMIN_PASSWORD', 'temporal123')
+
+    user, created = User.objects.get_or_create(
+      is_staff=True,
+      defaults={'email': email}
+    )
+    user.set_password(password)
+    user.save()
+
+    if created:
       self.stdout.write(self.style.SUCCESS('Admin created successfully'))
     else:
-      self.stdout.write('Admin already exists, skipping.')
+      self.stdout.write(self.style.SUCCESS('Admin password updated successfully'))
