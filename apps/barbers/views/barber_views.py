@@ -27,7 +27,7 @@ class BarberListView(generics.ListAPIView):
   permission_classes = [AllowAny]
 
   def get_queryset(self):
-    if self.request.user.is_staff:
+    if self.request.user.is_authenticated and self.request.user.is_staff:
       return Barber.objects.all()
     return Barber.objects.filter(is_active=True)
 

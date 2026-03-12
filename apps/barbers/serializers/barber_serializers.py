@@ -21,7 +21,7 @@ class BarberSerializer(serializers.ModelSerializer):
     model = Barber
     fields = [
       'id', 'user', 'work_start_time', 'work_end_time',
-      'lunch_start_time', 'lunch_end_time', 'barber_working_hours'
+      'lunch_start_time', 'lunch_end_time', 'barber_working_hours', 'is_active'
     ]
 
   def get_barber_working_hours(self, obj):
@@ -58,7 +58,7 @@ class BarberUpdateSerializer(serializers.ModelSerializer):
     fields = [
       'first_name', 'last_name', 'email', 'phone',
       'work_start_time', 'work_end_time',
-      'lunch_start_time', 'lunch_end_time'
+      'lunch_start_time', 'lunch_end_time', 'is_active'
     ]
 
   def validate(self, data):

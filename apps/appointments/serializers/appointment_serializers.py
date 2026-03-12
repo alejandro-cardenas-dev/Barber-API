@@ -65,5 +65,5 @@ class BarberDetailSerializer(serializers.ModelSerializer):
     model = Barber
     fields = [
       'id', 'user', 'work_start_time', 'work_end_time',
-      'lunch_start_time', 'lunch_end_time', 'last_update', 'appointments'
+      'lunch_start_time', 'lunch_end_time', 'last_update', 'appointments', 'is_active'
     ]
