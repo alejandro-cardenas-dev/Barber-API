@@ -23,9 +23,13 @@ class BarberListView(generics.ListAPIView):
   **Response:**
   - 200: List of barbers with their basic information.
   """
-  queryset = Barber.objects.all()
   serializer_class = BarberSerializer
   permission_classes = [AllowAny]
+
+  def get_queryset(self):
+    if self.request.user.is_staff:
+      return Barber.objects.all()
+    return Barber.objects.filter(is_active=True)
 
 
 class BarberAvailabilityByDateView(APIView):
