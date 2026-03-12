@@ -11,6 +11,7 @@ class Barber(models.Model):
   lunch_start_time = models.TimeField(default=time(12, 0), blank=False, null=False)
   lunch_end_time = models.TimeField(default=time(14, 0), blank=False, null=False)
   last_update = models.DateTimeField(auto_now=True)
+  is_active = models.BooleanField(default=True)
 
   @staticmethod
   def validate_schedule_values_creation(work_start_time, work_end_time, lunch_start_time, lunch_end_time):

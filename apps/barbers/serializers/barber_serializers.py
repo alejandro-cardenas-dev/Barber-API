@@ -45,3 +45,41 @@ class EditBarberScheduleSerializer(serializers.ModelSerializer):
       except DjangoValidationError as error:
         raise serializers.ValidationError({'detail': error.messages})
       return data
+
+
+class BarberUpdateSerializer(serializers.ModelSerializer):
+  first_name = serializers.CharField(source='user.first_name')
+  last_name = serializers.CharField(source='user.last_name')
+  email = serializers.EmailField(source='user.email')
+  phone = serializers.CharField(source='user.phone')
+
+  class Meta:
+    model = Barber
+    fields = [
+      'first_name', 'last_name', 'email', 'phone',
+      'work_start_time', 'work_end_time',
+      'lunch_start_time', 'lunch_end_time'
+    ]
+
+  def validate(self, data):
+    instance = getattr(self, 'instance', None)
+    work_start = data.get('work_start_time', getattr(instance, 'work_start_time', None))
+    work_end = data.get('work_end_time', getattr(instance, 'work_end_time', None))
+    lunch_start = data.get('lunch_start_time', getattr(instance, 'lunch_start_time', None))
+    lunch_end = data.get('lunch_end_time', getattr(instance, 'lunch_end_time', None))
+
+    try:
+        Barber.validate_schedule_values_creation(work_start, work_end, lunch_start, lunch_end)
+    except DjangoValidationError as error:
+        raise serializers.ValidationError({'detail': error.messages})
+    return data
+
+  def update(self, instance, validated_data):
+    user_data = validated_data.pop('user', {})
+    for attr, value in user_data.items():
+      setattr(instance.user, attr, value)
+    instance.user.save()
+    for attr, value in validated_data.items():
+      setattr(instance, attr, value)
+    instance.save()
+    return instance

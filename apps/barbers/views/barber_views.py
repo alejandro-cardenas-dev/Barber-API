@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from rest_framework import status
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -9,7 +10,7 @@ from rest_framework.views import APIView
 
 from apps.appointments.serializers.appointment_serializers import BarberDetailSerializer
 from apps.barbers.models import Barber
-from apps.barbers.serializers.barber_serializers import BarberSerializer, EditBarberScheduleSerializer
+from apps.barbers.serializers.barber_serializers import BarberSerializer, BarberUpdateSerializer, EditBarberScheduleSerializer
 from apps.barbers.services.barber_services import calculate_barber_availability_for_date
 from permissions import IsAdmin, IsBarber
 
@@ -108,7 +109,7 @@ class BarberScheduleListUpdateView(generics.RetrieveUpdateAPIView):
       raise NotFound('No barber has been found for this user.')
 
 
-class BarberDetailAdminView(generics.RetrieveAPIView):
+class BarberDetailAdminView(generics.RetrieveUpdateDestroyAPIView):
   """
   Retrieve full barber details including appointments.
   Only accessible by admin.
@@ -116,3 +117,17 @@ class BarberDetailAdminView(generics.RetrieveAPIView):
   queryset = Barber.objects.all()
   serializer_class = BarberDetailSerializer
   permission_classes = [IsAdmin]
+
+  def get_serializer_class(self):
+    if self.request.method in ('PUT', 'PATCH'):
+      return BarberUpdateSerializer
+    return BarberDetailSerializer
+
+  def destroy(self, request, *args, **kwargs):
+    barber = self.get_object()
+    barber.is_active = False
+    barber.save(update_fields=['is_active'])
+    return Response(
+      {"detail": "Barber deactivated successfully."},
+      status=status.HTTP_204_NO_CONTENT
+    )
