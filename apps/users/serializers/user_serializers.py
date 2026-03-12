@@ -11,7 +11,7 @@ from apps.users.services.user_services import register_user
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'is_barber', 'is_customer']
+    fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'is_barber', 'is_customer', 'is_staff']
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
