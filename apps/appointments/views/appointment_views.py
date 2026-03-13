@@ -49,8 +49,8 @@ class AppointmentListCreateView(generics.ListCreateAPIView):
 
   def get_permissions(self):
     if self.request.method == 'POST':
-      return [IsCustomer()]
-    return [IsCustomerOrBarber() or IsAdmin()]
+        return [IsCustomer()]
+    return super().get_permissions()
 
 
 class CancelAppointmentView(generics.UpdateAPIView):
