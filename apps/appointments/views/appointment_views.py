@@ -30,6 +30,7 @@ class AppointmentListCreateView(generics.ListCreateAPIView):
     return AppointmentSerializer
 
   def get_queryset(self):
+    Appointment.update_completed_appointments()
     user = self.request.user
     queryset = Appointment.objects.select_related('barber__user', 'customer__user', 'service')
 
