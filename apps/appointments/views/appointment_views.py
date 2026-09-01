@@ -7,6 +7,7 @@ from apps.appointments.serializers.appointment_serializers import (
   CancelAppointmentSerializer,
   CreateAppointmentSerializer,
 )
+from apps.appointments.services.appointment_services import filter_appointments
 from apps.customers.models import Customer
 from permissions import IsAdmin, IsAppointmentOwner, IsCustomer, IsCustomerOrBarber
 
@@ -14,6 +15,7 @@ from permissions import IsAdmin, IsAppointmentOwner, IsCustomer, IsCustomerOrBar
 class AppointmentListCreateView(generics.ListCreateAPIView):
   """
   List or create appointments.
+  Can filter by using date YYYY-MM-DD format and status ('confirmed', 'completed', 'cancelled')
 
   **GET:**
   - Admin: returns all appointments.
@@ -35,12 +37,27 @@ class AppointmentListCreateView(generics.ListCreateAPIView):
     queryset = Appointment.objects.select_related('barber__user', 'customer__user', 'service')
 
     if user.is_staff:
-      return queryset.all()
-    if user.is_barber:
-      return queryset.filter(barber=user.barber)
-    if user.is_customer:
-      return queryset.filter(customer=user.customer)
-    return Appointment.objects.none()
+      queryset = queryset.all()
+    elif user.is_barber:
+      queryset = queryset.filter(barber=user.barber)
+    elif user.is_customer:
+      queryset = queryset.filter(customer=user.customer)
+    else:
+      return Appointment.objects.none()
+
+    status_filter = self.request.query_params.get('status')
+    date_filter = self.request.query_params.get('date')
+
+    queryset = filter_appointments(
+      queryset=queryset,
+      status=status_filter,
+      appointment_date=date_filter
+    )
+
+    return queryset.order_by(
+      '-appointment_date',
+      '-appointment_start_time'
+    )
 
   def get_serializer_context(self):
     context = super().get_serializer_context()
