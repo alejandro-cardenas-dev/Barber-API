@@ -52,6 +52,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://barber-frontened.vercel.app",
 ]
 
 
